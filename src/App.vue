@@ -4,7 +4,10 @@
     <Balance :total="total" />
   </div>
   <IncomeExpenses :income="+income" :expense="+expense" />
-  <TransactionList :transaction="transaction" />
+  <TransactionList
+    :transaction="transactions"
+    @delete-transaction="deleteTransaction"
+  />
   <AddTransaction @-add-transaction="handleTransition" />
 </template>
 
@@ -16,8 +19,11 @@ import Balance from "@/components/Balance.vue";
 import IncomeExpenses from "@/components/IncomeExpenses.vue";
 import TransactionList from "@/components/TransactionList.vue";
 import AddTransaction from "@/components/AddTransaction.vue";
+import { useToast } from "vue-toastification";
 
-const transaction = ref([
+const toast = useToast();
+
+const transactions = ref([
   { id: 0, text: "Flower", amount: -19.99 },
   { id: 1, text: "Salary", amount: 300 },
   { id: 2, text: "Book", amount: -10 },
@@ -25,13 +31,13 @@ const transaction = ref([
 ]);
 
 const total = computed(() => {
-  return transaction.value.reduce((acc, transaction) => {
+  return transactions.value.reduce((acc, transaction) => {
     return acc + transaction.amount;
   }, 0);
 });
 
 const income = computed(() => {
-  return transaction.value
+  return transactions.value
     .filter((transition) => transition.amount > 0)
     .reduce((acc, transition) => {
       return acc + transition.amount;
@@ -39,7 +45,7 @@ const income = computed(() => {
 });
 
 const expense = computed(() => {
-  return transaction.value
+  return transactions.value
     .filter((transition) => transition.amount < 0)
     .reduce((acc, transition) => {
       return acc + transition.amount;
@@ -47,7 +53,7 @@ const expense = computed(() => {
 });
 
 const handleTransition = (data) => {
-  transaction.value.push({
+  transactions.value.push({
     id: generateId,
     text: data.text,
     amount: data.amount,
@@ -56,5 +62,10 @@ const handleTransition = (data) => {
 
 const generateId = () => {
   return Math.floor(Math.random() * 1_000_000);
+};
+
+const deleteTransaction = (id) => {
+  transactions.value = transactions.value.filter((obj) => obj.id !== id);
+  toast.success("Transaction deleted!");
 };
 </script>
