@@ -44,7 +44,7 @@ const onSubmit = () => {
     return;
   }
 
-  if (!isNumber(amount.value)) {
+  if (!isNumber(+amount.value)) {
     toast.warning("You should write a valid number in the amount filed!");
     amount.value = "";
     return;

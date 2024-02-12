@@ -2,7 +2,7 @@
   <h3>History</h3>
   <ul id="list" class="list">
     <li
-      v-for="transaction in transitions"
+      v-for="transaction in transaction"
       :key="transaction.id"
       :class="transaction.amount < 0 ? 'minus' : 'plus'"
     >
@@ -17,7 +17,7 @@
 import { defineProps } from "vue";
 
 const props = defineProps({
-  transitions: {
+  transaction: {
     type: Array,
     required: true,
   },
